@@ -198,22 +198,11 @@ var CPTextFieldInputOwner = nil;
     [[[self window] platformWindow] _propagateCurrentDOMEvent:YES];
 }
 
-- (BOOL)performKeyEquivalent:(CPEvent)anEvent
-{
-    [[[self window] platformWindow] _propagateCurrentDOMEvent:YES];
-    return YES;
-}
-
 - (BOOL)becomeFirstResponder
 {
     _stringValue = [self stringValue];
     
     [self setThemeState:CPThemeStateEditing];
-    
-    setTimeout(function(){
-        [self _DOMTextareaElement].focus();
-        CPTextFieldInputOwner = self;
-    }, 0.0);
     
     [self textDidFocus:[CPNotification notificationWithName:CPTextFieldDidFocusNotification object:self userInfo:nil]];
     
