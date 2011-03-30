@@ -32,9 +32,10 @@ var CPTextFieldInputOwner = nil;
 
 @implementation LPMultiLineTextField : CPTextField
 {
-    id          _DOMTextareaElement;
-    CPString    _stringValue;
-    BOOL        _hideOverflow;
+    id        _DOMTextareaElement;
+    CPString  _stringValue;
+    BOOL      _hideOverflow;
+    int       _textAlignment;
 }
 
 - (DOMElement)_DOMTextareaElement
@@ -66,6 +67,7 @@ var CPTextFieldInputOwner = nil;
 {
     if (self = [super initWithFrame:aFrame])
     {
+        _textAlignment = [self currentValueForThemeAttribute:@"alignment"];
     }
     return self;
 }
@@ -92,6 +94,33 @@ var CPTextFieldInputOwner = nil;
     [self _DOMTextareaElement].select();
 }
 
+- (void)setTextAlignment:(int)aCpTextAlignment
+{
+    var DOMElement = [self _DOMTextareaElement];
+    switch ( aCpTextAlignment )
+    {
+    case CPLeftTextAlignment:
+        DOMElement.style.textAlign = "left";
+        _textAlignment = CPLeftTextAlignment;
+        break;        
+    case CPJustifiedTextAlignment:
+        DOMElement.style.textAlign = "justify"; //not supported
+        _textAlignment = CPJustifiedTextAlignment;
+        break;        
+    case CPCenterTextAlignment:
+        DOMElement.style.textAlign = "center";
+        _textAlignment = CPCenterTextAlignment;
+        break;
+    case CPRightTextAlignment:
+        DOMElement.style.textAlign = "right";
+        _textAlignment = CPRightTextAlignment;
+        break;
+    default:
+        _textAlignment = CPLeftTextAlignment;
+        DOMElement.style.textAlign = "left";
+    }
+}
+
 - (void)layoutSubviews
 {
     [super layoutSubviews];
@@ -116,24 +145,7 @@ var CPTextFieldInputOwner = nil;
     DOMElement.style.color = [[self currentValueForThemeAttribute:@"text-color"] cssString];
     DOMElement.style.font = [[self currentValueForThemeAttribute:@"font"] cssString];
  
-    switch ([self currentValueForThemeAttribute:@"alignment"])
-    {
-        case CPLeftTextAlignment:
-            DOMElement.style.textAlign = "left";
-            break;        
-        case CPJustifiedTextAlignment:
-            DOMElement.style.textAlign = "justify"; //not supported
-            break;        
-        case CPCenterTextAlignment:
-            DOMElement.style.textAlign = "center";
-            break;
-        case CPRightTextAlignment:
-            DOMElement.style.textAlign = "right";
-            break;
-        default:
-            DOMElement.style.textAlign = "left";
-    }
- 
+    [self setTextAlignment:_textAlignment];
     DOMElement.value = _stringValue || @"";
 
     if(_hideOverflow)
