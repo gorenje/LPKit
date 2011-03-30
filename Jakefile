@@ -99,3 +99,8 @@ task ("symlink-narwhal", ["release", "debug"], function()
         OS.system(["sudo", "ln", "-s", buildPath, symlinkPath]);
     });
 });
+
+task( "clean-all", function()
+{
+  OS.system( ["rm", "-rf", "Build"]);
+});
